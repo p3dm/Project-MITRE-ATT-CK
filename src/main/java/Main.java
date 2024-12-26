@@ -1,26 +1,29 @@
-package Atomic_Red_Team_technique;
+import Model.AtomicTest;
 
-import Mitre_ATTxCK.Data.DataIntegrator;
-import Mitre_ATTxCK.MitreTechnique;
+import Processor.MitreAtomicIntegrator;
+import API.MitreApiFetcher;
+import API.AtomicApiFetcher;
+import Model.MitreTechnique;
 import ExcelExport.ExcelExporter;
 
 import java.util.List;
 
 public class Main {
-    // Main Application
-    public static void main(String[] args) throws Exception {
-        // Đọc dữ liệu từ Atomic Red Team
-        AtomicTest atomicTest = DocFileYamlAtomic.readYaml("path/to/atomic.yaml");
 
-        // Đọc dữ liệu từ MITRE ATT&CK
-        List<MitreTechnique> mitreTechniques = DocMitreJSON.readAllJsonInDirectory("resources/enterprise-attack");
+    public static void main(String[] args) {
+        try {
 
-        // Kết hợp dữ liệu
-        DataIntegrator.connectTechniques(mitreTechniques, List.of(atomicTest)).forEach(System.out::println);
+            List<MitreTechnique> mitreTechniques = MitreApiFetcher.fetchMitreTechniques();
+            AtomicTest atomicTest = AtomicApiFetcher.fetchAtomicTest();
 
-        // Xuất ra Excel
-        ExcelExporter.exportToExcel(List.of(atomicTest), "output.xlsx");
+            List<AtomicTest> integratedTests = MitreAtomicIntegrator.integrateMitreAndAtomic(mitreTechniques, List.of(atomicTest));
 
-        System.out.println("Exported successfully!");
+            String outputPath = "output/atomic_tests.xlsx";
+            ExcelExporter.exportToExcel(outputPath, mitreTechniques, integratedTests);
+
+            System.out.println("Data integration and export completed successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,4 +1,4 @@
-package Atomic_Red_Team_technique;
+package Model;
 
 import java.util.List;
 

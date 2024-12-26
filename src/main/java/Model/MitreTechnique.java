@@ -1,36 +1,54 @@
-package Mitre_ATTxCK;
+package Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MitreTechnique {
     private String techniqueId;
     private String name;
     private String description;
-    private String tactic;
+    private String type;
+    private List<String> x_mitre_tactic_type;
 
-    public void setTactic(String tactic) {
-        this.tactic = tactic;
-    }
-    public String getTactic() {
-        return tactic;
+    public String getType() {
+        return type;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setType(String type) {
+        this.type = type;
     }
-    public String getDescription() {
-        return description;
+
+    public String getId() {
+        return techniqueId;
+    }
+
+    public void setId(String techniqueId) {
+        this.techniqueId = techniqueId;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
-    public String getName() {
-        return name;
+
+    public String getDescription() {
+        return description;
     }
 
-    public void setTechniqueId(String techniqueId){
-        this.techniqueId = techniqueId;
+    public void setDescription(String description) {
+        this.description = description;
     }
-    public String getTechniqueId(){
-        return techniqueId;
+
+    public List<String> getX_mitre_tactic_type() {
+        return x_mitre_tactic_type;
+    }
+
+    public void setX_mitre_tactic_type(List<String> x_mitre_tactic_type) {
+        this.x_mitre_tactic_type = x_mitre_tactic_type;
     }
 }

@@ -1,31 +1,41 @@
-package Atomic_Red_Team_technique;
+package API;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import Model.MitreTechnique;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.io.IOException;
 
-public class MitreAPIFetcher {
-    public static String fetchMitreData(String apiUrl) throws Exception {
-        URL url = new URL(apiUrl);
+public class MitreApiFetcher {
+    private static final String MITRE_API_URL = "https://raw.githubusercontent.com/mitre/cti/ATT%26CK-v6.0/enterprise-attack/enterprise-attack.json";
+
+    public static List<MitreTechnique> fetchMitreTechniques() throws Exception {
+        URL url = new URL(MITRE_API_URL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", "application/json");
 
         int responseCode = connection.getResponseCode();
         if (responseCode != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + responseCode);
+            throw new IOException("Failed to fetch data. HTTP response code: " + responseCode);
         }
 
-        BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-        StringBuilder response = new StringBuilder();
-        String output;
-        while ((output = br.readLine()) != null) {
-            response.append(output);
-        }
+        try (InputStream inputStream = connection.getInputStream()) {
+            ObjectMapper objectMapper = new ObjectMapper();
 
-        connection.disconnect();
-        return response.toString();
+
+            JsonNode rootNode = objectMapper.readTree(inputStream);
+
+
+            JsonNode objectsNode = rootNode.get("objects");
+            if (objectsNode == null || !objectsNode.isArray()) {
+                throw new IOException("Invalid JSON format: 'objects' field is missing or not an array.");
+            }
+
+            return objectMapper.convertValue(objectsNode,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, MitreTechnique.class));
+        }
     }
-
 }
