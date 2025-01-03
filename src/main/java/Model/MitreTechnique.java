@@ -2,22 +2,19 @@ package Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.List;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MitreTechnique {
     private String techniqueId;
     private String name;
     private String description;
-    private String type;
-    private List<String> x_mitre_tactic_type;
+    private String attackTechnique;
+    private String externalId;
 
-    public String getType() {
-        return type;
+    public String getAttackTechnique() {
+        return attackTechnique;
     }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setAttackTechnique(String attackTechnique) {
+        this.attackTechnique = attackTechnique;
     }
 
     public String getId() {
@@ -44,11 +41,10 @@ public class MitreTechnique {
         this.description = description;
     }
 
-    public List<String> getX_mitre_tactic_type() {
-        return x_mitre_tactic_type;
+    public String getExternalId(){
+        return externalId;
     }
-
-    public void setX_mitre_tactic_type(List<String> x_mitre_tactic_type) {
-        this.x_mitre_tactic_type = x_mitre_tactic_type;
+    public String setExternal_id(String external_id){
+        return this.externalId = external_id;
     }
 }

@@ -12,13 +12,11 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    //xu ly file YAML
-    implementation 'org.yaml:snakeyaml:2.0'
     //xu ly JSON tu mitre
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     //xuat file excel
-    implementation 'org.apache.poi:poi-ooxml:5.2.3'
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
 }
 
 test {

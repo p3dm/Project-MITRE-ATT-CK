@@ -1,25 +1,26 @@
 package ExcelExport;
 
-import Model.AtomicTest;
 import Model.MitreTechnique;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
 public class ExcelExporter {
-    public static void exportToExcel(String filePath, List<MitreTechnique> mitreTechniques, List<AtomicTest> atomicTests) throws IOException {
+    public static void exportToExcel(String filePath, List<MitreTechnique> mitreTechniques) throws IOException {
         Workbook workbook = new XSSFWorkbook();
 
-        // Sheet 1: MITRE ATT&CK
+        
         Sheet mitreSheet = workbook.createSheet("MITRE ATT&CK");
         Row mitreHeader = mitreSheet.createRow(0);
         mitreHeader.createCell(0).setCellValue("Technique ID");
         mitreHeader.createCell(1).setCellValue("Name");
         mitreHeader.createCell(2).setCellValue("Description");
-        mitreHeader.createCell(3).setCellValue("Tactic");
+        mitreHeader.createCell(3).setCellValue("Attack Technique");
+        mitreHeader.createCell(4).setCellValue("External ID");
 
         int mitreRowNum = 1;
         for (MitreTechnique technique : mitreTechniques) {
@@ -27,31 +28,18 @@ public class ExcelExporter {
             row.createCell(0).setCellValue(technique.getId());
             row.createCell(1).setCellValue(technique.getName());
             row.createCell(2).setCellValue(technique.getDescription());
-            row.createCell(3).setCellValue(technique.getType());
+            row.createCell(3).setCellValue(technique.getAttackTechnique());
+            row.createCell(4).setCellValue(technique.getExternalId());
         }
 
-        // Sheet 2: Atomic Tests
-        Sheet atomicSheet = workbook.createSheet("Atomic Tests");
-        Row atomicHeader = atomicSheet.createRow(0);
-        atomicHeader.createCell(0).setCellValue("Technique ID");
-        atomicHeader.createCell(1).setCellValue("Name");
-        atomicHeader.createCell(2).setCellValue("Description");
-        atomicHeader.createCell(3).setCellValue("Commands");
-
-        int atomicRowNum = 1;
-        for (AtomicTest test : atomicTests) {
-            Row row = atomicSheet.createRow(atomicRowNum++);
-            row.createCell(0).setCellValue(test.getTechniqueId());
-            row.createCell(1).setCellValue(test.getName());
-            row.createCell(2).setCellValue(test.getDescription());
-            row.createCell(3).setCellValue(String.join(", ", test.getCommands()));
+        try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+            workbook.write(fileOut);
+        } catch (IOException e) {
+            throw new IOException("Failed to save Excel file: " + e.getMessage(), e);
+        } finally {
+            workbook.close();
         }
 
-        // Ghi file ra hệ thống
-        try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
-            workbook.write(outputStream);
-        }
-
-        workbook.close();
+        System.out.println("Excel file saved successfully to: " + filePath);
     }
 }
